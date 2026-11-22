@@ -42,6 +42,10 @@ export const ca = {
     photoAlt: 'Façana del local de Bussinets de Cuina al carrer Conestable de Portugal, amb els rètols de càtering i esdeveniments',
   },
 
+  ribbon: ['Menú de dilluns a divendres 7,50 €', 'Paella tots els dijous', 'Pollastre a l’ast els diumenges', 'Càtering per a celebracions i empreses', 'Croquetes de 10', 'Paelles i fideuà per encàrrec'],
+  badge: 'Cuina casolana · Per emportar · Granollers · ',
+  badgeCenter: 'Menú',
+
   week: {
     title: 'Menú, paella i pollastre a l’ast',
     today: 'Avui',

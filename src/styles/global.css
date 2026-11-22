@@ -162,6 +162,19 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
   .btn--light:hover { --bg: #fff; }
 }
 
+/* El telèfon "sona" en passar-hi el ratolí */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  a[href^='tel:']:hover svg:first-child { animation: ring 700ms var(--ease-out); transform-origin: 50% 20%; }
+}
+@keyframes ring {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(-14deg); }
+  30% { transform: rotate(12deg); }
+  45% { transform: rotate(-9deg); }
+  60% { transform: rotate(6deg); }
+  75% { transform: rotate(-3deg); }
+}
+
 /* Enllaç amb subratllat que es dibuixa */
 .link {
   color: inherit;

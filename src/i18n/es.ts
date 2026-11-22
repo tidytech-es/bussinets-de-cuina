@@ -44,6 +44,10 @@ export const es: Dict = {
     photoAlt: 'Fachada del local de Bussinets de Cuina en la calle Conestable de Portugal, con los rótulos de catering y eventos',
   },
 
+  ribbon: ['Menú de lunes a viernes 7,50 €', 'Paella todos los jueves', 'Pollo a l’ast los domingos', 'Catering para celebraciones y empresas', 'Croquetas de 10', 'Paellas y fideuà por encargo'],
+  badge: 'Cocina casera · Para llevar · Granollers · ',
+  badgeCenter: 'Menú',
+
   week: {
     title: 'Menú, paella y pollo a l’ast',
     today: 'Hoy',

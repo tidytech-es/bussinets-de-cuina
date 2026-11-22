@@ -12,11 +12,11 @@ const w = t.week;
   <div class="wrap">
     <h2 id="week-title" data-reveal>{w.title}</h2>
 
-    <div class="board" data-reveal style="--i:1">
+    <div class="board" data-reveal="board" style="--i:1">
       <article class="item item--menu" data-special-days="1,2,3,4,5">
         <p class="item__when">{w.menu.when} <span class="item__today">{w.today}</span></p>
         <h3 class="item__name">{w.menu.name}</h3>
-        <p class="item__price">{w.menu.price}</p>
+        <p class="item__price"><span data-count="7.5" data-decimals="2">{w.menu.price.replace(' €', '')}</span> €</p>
         <p class="item__detail">{w.menu.detail}</p>
         <p class="item__note">{w.menu.note}</p>
       </article>
@@ -91,6 +91,14 @@ const w = t.week;
   .item__note { color: #cdbda3; font-size: var(--step--1); }
 
   .week__call { margin-top: 1.5rem; }
+  /* Els tres plats entren un rere l'altre quan la pissarra apareix */
+  :global(.js-reveal) .board:not(.is-in) .item { opacity: 0; transform: translateY(16px); }
+  .item { transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out), background-color 300ms ease; }
+  .item:nth-child(2) { transition-delay: 90ms; }
+  .item:nth-child(3) { transition-delay: 180ms; }
+  @media (hover: hover) and (pointer: fine) {
+    .item:hover { background: #2d2218; }
+  }
   @media (max-width: 559px) { .week__call { width: 100%; } }
 
   @media (min-width: 900px) {

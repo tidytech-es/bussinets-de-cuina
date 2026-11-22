@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import { SITE } from '../config/site';
 import type { Dict } from '../i18n/ca';
 import Icon from './Icon.astro';
+import Segell from './Segell.astro';
 import facana from '../assets/fotos/facana.jpg';
 interface Props { t: Dict }
 const { t } = Astro.props;
@@ -11,18 +12,20 @@ const rating = SITE.rating.value.toLocaleString(t.htmlLang);
 <section class="hero" aria-labelledby="hero-title">
   <div class="wrap hero__grid">
     <div class="hero__copy">
-      <p class="status" data-status data-state="unknown">
+      <p class="status hero__in" style="--d:0" data-status data-state="unknown">
         <span class="status__dot" aria-hidden="true"></span>
         <span data-status-text>{t.status.fallback}</span>
       </p>
 
       <h1 id="hero-title" class="hero__title">
-        {t.hero.title.map((line, i) => <span class:list={['hero__line', { 'hero__line--accent': i === 1 }]}>{line} </span>)}
+        {t.hero.title.map((line, i) => (
+          <span class:list={['hero__line', { 'hero__line--accent': i === 1 }]} style={`--l:${i}`}><span class="hero__line-in">{line}</span> </span>
+        ))}
       </h1>
 
-      <p class="lead hero__lead">{t.hero.lead}</p>
+      <p class="lead hero__lead hero__in" style="--d:3">{t.hero.lead}</p>
 
-      <div class="hero__actions">
+      <div class="hero__actions hero__in" style="--d:4">
         <a class="btn" href={SITE.phone.href}>
           <Icon name="phone" />
           <span>{t.cta.call} <span class="hero__num">· {SITE.phone.display}</span></span>
@@ -33,7 +36,7 @@ const rating = SITE.rating.value.toLocaleString(t.htmlLang);
         </a>
       </div>
 
-      <ul class="hero__facts">
+      <ul class="hero__facts hero__in" style="--d:5">
         <li>
           <Icon name="star" class="hero__star" />
           <span><strong>{rating}</strong> {t.hero.ratingLabel} · {t.hero.reviews}</span>
@@ -43,6 +46,7 @@ const rating = SITE.rating.value.toLocaleString(t.htmlLang);
       </ul>
     </div>
 
+    <div class="hero__media">
     <figure class="hero__photo">
       <!-- Foto real de la façana (fitxa de Google). TODO(client): foto original en més resolució. -->
       <Picture
@@ -56,6 +60,8 @@ const rating = SITE.rating.value.toLocaleString(t.htmlLang);
         decoding="async"
       />
     </figure>
+    <Segell class="hero__segell" text={t.badge} center={t.badgeCenter} value="7,50€" />
+    </div>
   </div>
 </section>
 
@@ -68,7 +74,8 @@ const rating = SITE.rating.value.toLocaleString(t.htmlLang);
   }
   .hero__copy { display: grid; gap: 1.5rem; justify-items: start; }
   .hero__title { font-size: var(--step-4); line-height: 0.98; letter-spacing: -0.015em; }
-  .hero__line { display: block; }
+  .hero__line { display: block; overflow: clip; padding-bottom: 0.06em; margin-bottom: -0.06em; }
+  .hero__line-in { display: inline-block; }
   .hero__line--accent { color: var(--tomato); }
   .hero__lead { max-width: 34ch; }
   .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; width: 100%; }
@@ -88,6 +95,8 @@ const rating = SITE.rating.value.toLocaleString(t.htmlLang);
   .hero__facts strong { color: var(--ink); }
   :global(.hero__star) { width: 1.05rem; height: 1.05rem; color: var(--saffron); }
 
+  .hero__media { position: relative; }
+  .hero__media :global(.hero__segell) { position: absolute; left: clamp(-1rem, -2vw, -0.5rem); bottom: clamp(-1.25rem, -2vw, -0.75rem); }
   .hero__photo {
     margin: 0;
     border-radius: var(--radius);
@@ -105,6 +114,21 @@ const rating = SITE.rating.value.toLocaleString(t.htmlLang);
   @media (min-width: 900px) {
     .hero__grid { grid-template-columns: 1.15fr 0.85fr; }
     .hero__photo { aspect-ratio: 4 / 5; }
-    .hero { min-height: calc(100svh - 4.75rem); display: grid; align-content: center; }
+    .hero { min-height: calc(100svh - 4.75rem - 3.9rem); display: grid; align-content: center; }
+    .hero__media :global(.hero__segell) { left: -3.25rem; bottom: 2.5rem; }
   }
+
+  /* Entrada en carregar: línies que pugen des de la seva màscara, la foto que es destapa */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__line-in { animation: line-up 820ms var(--ease-out) both; animation-delay: calc(120ms + var(--l) * 90ms); }
+    .hero__in { animation: fade-up 700ms var(--ease-out) both; animation-delay: calc(var(--d) * 90ms + 120ms); }
+    .hero__photo { animation: photo-open 1000ms var(--ease-out) 80ms both; }
+    .hero__photo :global(img) { animation: photo-settle 1400ms var(--ease-out) 80ms both; }
+    .hero__media :global(.hero__segell) { animation: pop-in 600ms var(--ease-out) 700ms both; }
+  }
+  @keyframes line-up { from { transform: translateY(105%); } to { transform: none; } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes photo-open { from { clip-path: inset(12% 0 0 0 round var(--radius)); opacity: 0.4; } to { clip-path: inset(0 0 0 0 round var(--radius)); opacity: 1; } }
+  @keyframes photo-settle { from { transform: scale(1.08); } to { transform: scale(1); } }
+  @keyframes pop-in { from { opacity: 0; transform: scale(0.85) rotate(-20deg); } to { opacity: 1; transform: none; } }
 </style>

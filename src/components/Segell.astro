@@ -1,0 +1,63 @@
+---
+// Segell rodó amb text que gira, sobre la foto del hero.
+// Basat en "Spinning Circular Text" de 21st.dev (ncdai): cada lletra es col·loca
+// amb rotate() + translateY(radi). Aquí els angles es calculen en compilar.
+interface Props { text: string; center: string; value: string; class?: string }
+const { text, center, value, class: cls } = Astro.props;
+const chars = [...text];
+const step = 360 / chars.length;
+---
+<div class:list={['segell', cls]} aria-hidden="true">
+  <div class="segell__ring">
+    {chars.map((c, i) => <span style={`--r:${(i * step).toFixed(3)}deg`}>{c}</span>)}
+  </div>
+  <div class="segell__center">
+    <span class="segell__label">{center}</span>
+    <span class="segell__value">{value}</span>
+  </div>
+</div>
+
+<style>
+  .segell {
+    --size: clamp(7.5rem, 6rem + 6vw, 10.5rem);
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 0 10px 30px -12px rgb(35 26 18 / 0.55);
+  }
+  .segell__ring {
+    position: absolute;
+    inset: 0;
+    font: 700 calc(var(--size) * 0.078) / 1 var(--font-body);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    animation: segell-spin 22s linear infinite;
+  }
+  .segell__ring span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(var(--r)) translateY(calc(var(--size) * -0.4));
+  }
+  .segell__center {
+    display: grid;
+    justify-items: center;
+    width: 58%;
+    aspect-ratio: 1;
+    place-content: center;
+    border-radius: 50%;
+    background: var(--saffron);
+    color: var(--ink);
+    line-height: 1;
+  }
+  .segell__label { font: 700 calc(var(--size) * 0.075) / 1 var(--font-body); text-transform: uppercase; letter-spacing: 0.06em; }
+  .segell__value { font: 400 calc(var(--size) * 0.15) / 1 var(--font-display); margin-top: 0.15em; white-space: nowrap; }
+
+  @keyframes segell-spin { to { transform: rotate(-360deg); } }
+  @media (prefers-reduced-motion: reduce) { .segell__ring { animation: none; } }
+</style>

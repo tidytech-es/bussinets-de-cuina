@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Hero from './Hero.astro';
 import Setmana from './Setmana.astro';
+import Cinta from './Cinta.astro';
 import Plats from './Plats.astro';
 import ComFunciona from './ComFunciona.astro';
 import Catering from './Catering.astro';
@@ -17,6 +18,7 @@ const { t } = Astro.props;
 <Base t={t}>
   <Header slot="header" t={t} />
   <Hero t={t} />
+  <Cinta t={t} />
   <Setmana t={t} />
   <Plats t={t} />
   <ComFunciona t={t} />
