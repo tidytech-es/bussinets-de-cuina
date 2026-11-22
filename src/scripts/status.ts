@@ -1,5 +1,5 @@
 // Indicador "Obert ara / Tancat" a partir de l'horari real, a l'hora de Madrid.
-// Per provar-lo amb una altra hora: afegeix ?ara=2026-11-23T15:45 a l'URL
+// Per provar-lo amb una altra hora (només en local): afegeix ?ara=2026-11-23T15:45 a l'URL
 // (hora local de Granollers).
 
 type Hours = Record<string, [number, number] | null>;
@@ -24,7 +24,9 @@ export function computeStatus(day: number, min: number, hours: Hours): Status | 
 
 /** Dia i minuts actuals a Europe/Madrid (o els de ?ara=) */
 export function madridNow(now = new Date()): { day: number; min: number } {
-  const ara = new URLSearchParams(location.search).get('ara');
+  // ?ara= només funciona en local, perquè un enllaç compartit no mostri un dia fals.
+  const local = ['localhost', '127.0.0.1'].includes(location.hostname);
+  const ara = local ? new URLSearchParams(location.search).get('ara') : null;
   const m = ara?.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
   if (m) {
     const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
