@@ -1,0 +1,120 @@
+---
+import { Picture } from 'astro:assets';
+import type { Dict } from '../i18n/ca';
+import { PLATS } from '../content/plats';
+import PhotoSlot from './PhotoSlot.astro';
+interface Props { t: Dict }
+const { t } = Astro.props;
+const [feature, ...rest] = PLATS;
+const f = t.dishes.items[feature.key];
+---
+<section class="section plats" id="plats" aria-labelledby="plats-title">
+  <div class="wrap">
+    <div class="plats__head" data-reveal>
+      <h2 id="plats-title">{t.dishes.title}</h2>
+      <p class="lead">{t.dishes.lead}</p>
+    </div>
+
+    <div class="plats__grid">
+      <article class="feature" data-reveal>
+        <div class="feature__media">
+          {feature.foto ? (
+            <Picture src={feature.foto} formats={['avif', 'webp']} widths={[480, 760, 1020]} sizes="(min-width: 900px) 55vw, 100vw" alt={f.name} loading="lazy" />
+          ) : (
+            <PhotoSlot name={f.name} label={t.dishes.photoPending} class="feature__slot" />
+          )}
+        </div>
+        <div class="feature__body">
+          <h3 class="feature__name">{f.name}</h3>
+          <p>{f.note}</p>
+        </div>
+      </article>
+
+      <ul class="list" role="list">
+        {rest.map((p, i) => {
+          const d = t.dishes.items[p.key];
+          return (
+            <li class="row" data-reveal style={`--i:${i + 1}`}>
+              <div class="row__media">
+                {p.foto ? (
+                  <Picture src={p.foto} formats={['avif', 'webp']} widths={[240, 400]} sizes="160px" alt={d.name} loading="lazy" />
+                ) : (
+                  <PhotoSlot name={d.name} label={t.dishes.photoPending} class="row__slot" />
+                )}
+              </div>
+              <div class="row__body">
+                <h3>{d.name}</h3>
+                <p>{d.note}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <p class="plats__more" data-reveal>{t.dishes.more}</p>
+  </div>
+</section>
+
+<style>
+  .plats__head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+  .plats__grid { display: grid; gap: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+
+  .feature {
+    display: grid;
+    background: var(--paper-2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .feature__media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--kraft); }
+  .feature__media :global(img) {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 700ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .feature:hover .feature__media :global(img) { transform: scale(1.03); }
+  }
+  :global(.feature__slot) { width: 100%; height: 100%; }
+  .feature__body { padding: 1.25rem 1.5rem 1.5rem; display: grid; gap: 0.35rem; }
+  .feature__name { font-size: var(--step-2); }
+  .feature__body p { color: var(--ink-soft); }
+
+  .list { list-style: none; margin: 0; padding: 0; display: grid; }
+  .row {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1.1rem;
+    align-items: center;
+    padding-block: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .row:last-child { border-bottom: 1px solid var(--line); }
+  .row__media { aspect-ratio: 1; border-radius: var(--radius-sm); overflow: hidden; }
+  .row__media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  :global(.row__slot) { width: 100%; height: 100%; }
+  :global(.row__slot .slot__name) { font-size: 0.85rem !important; }
+  :global(.row__slot .slot__tag) { font-size: 0.55rem !important; bottom: 10px !important; padding: 0.15rem 0.4rem !important; }
+  .row__body { display: grid; gap: 0.25rem; }
+  .row__body h3 { font-size: var(--step-2); }
+  .row__body p { color: var(--ink-soft); font-size: var(--step--1); line-height: 1.5; }
+
+  .plats__more {
+    margin-top: clamp(1.75rem, 1rem + 2vw, 2.5rem);
+    font-size: var(--step-1);
+    max-width: 40ch;
+  }
+
+  @media (min-width: 900px) {
+    .plats__head { grid-template-columns: 1fr 1fr; align-items: end; gap: 3rem; }
+    .plats__head .lead { justify-self: end; }
+    .plats__grid { grid-template-columns: 1.25fr 1fr; align-items: stretch; }
+    .feature { grid-template-rows: 1fr auto; }
+    .feature__media { aspect-ratio: auto; min-height: 22rem; }
+    .list { align-content: center; }
+    .row { grid-template-columns: 8.5rem 1fr; padding-block: 1.25rem; }
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import { SITE } from '../config/site';
+import type { Dict } from '../i18n/ca';
+import Icon from './Icon.astro';
+import { Image } from 'astro:assets';
+import logo from '../assets/logo/logo.png';
+interface Props { t: Dict; otherPath?: string }
+const { t, otherPath = t.other.path } = Astro.props;
+const home = t.path;
+---
+<header class="header">
+  <div class="wrap header__inner">
+    <!-- Logo extret del cartell del menú (scripts/extreure-logo.mjs). TODO(client): arxiu original en SVG. -->
+    <a class="brand" href={home}>
+      <Image src={logo} alt={SITE.name} width={164} densities={[1, 2, 3]} format="webp" loading="eager" class="brand__logo" />
+    </a>
+
+    <nav class="nav" aria-label={t.nav.label}>
+      <a class="link nav__link" href={`${home}#menu`}>{t.nav.week}</a>
+      <a class="link nav__link" href={`${home}#plats`}>{t.nav.dishes}</a>
+      <a class="link nav__link" href={`${home}#per-emportar`}>{t.nav.takeaway}</a>
+      <a class="link nav__link" href={`${home}#catering`}>{t.nav.catering}</a>
+      <a class="link nav__link" href={`${home}#horari`}>{t.nav.hours}</a>
+    </nav>
+
+    <div class="header__end">
+      <a class="lang" href={otherPath} hreflang={t.other.short.toLowerCase()} lang={t.other.short.toLowerCase()} title={t.langSwitch}>
+        <span class="visually-hidden">{t.langSwitch}: </span>{t.other.short}
+      </a>
+      <a class="btn header__call" href={SITE.phone.href}>
+        <Icon name="phone" />
+        <span>{SITE.phone.display}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .header__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 4rem;
+  }
+  .brand {
+    display: inline-flex;
+    margin-right: auto;
+    padding-block: 0.6rem;
+    transition: transform 140ms var(--ease-out);
+  }
+  .brand:active { transform: scale(0.97); }
+  :global(.brand__logo) { width: 132px; height: auto; }
+  @media (min-width: 900px) { :global(.brand__logo) { width: 164px; } }
+  .nav { display: none; gap: 1.75rem; }
+  .nav__link { font-weight: 500; font-size: 0.98rem; background-size: 0% 1.5px; background-position: 100% 100%; }
+  @media (hover: hover) and (pointer: fine) {
+    .nav__link:hover { background-size: 100% 1.5px; background-position: 0 100%; }
+  }
+  .header__end { display: flex; align-items: center; gap: 0.75rem; }
+  .lang {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: border-color 180ms ease, background-color 180ms ease, transform 140ms var(--ease-out);
+  }
+  .lang:active { transform: scale(0.95); }
+  @media (hover: hover) and (pointer: fine) {
+    .lang:hover { border-color: var(--ink); }
+  }
+  .header__call { display: none; min-height: 2.75rem; padding: 0.55rem 1.1rem; font-size: 0.98rem; }
+
+  @media (min-width: 900px) {
+    .nav { display: flex; }
+    .header__call { display: inline-flex; }
+    .header__inner { min-height: 4.75rem; }
+  }
+</style>

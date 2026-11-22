@@ -1,0 +1,324 @@
+---
+import { SITE, CATERING_FORM } from '../config/site';
+import type { Dict } from '../i18n/ca';
+import Icon from './Icon.astro';
+interface Props { t: Dict }
+const { t } = Astro.props;
+const f = t.catering.fields;
+const isNetlify = CATERING_FORM.mode === 'netlify';
+const action = CATERING_FORM.mode === 'action' && CATERING_FORM.action ? CATERING_FORM.action : `${t.path}#catering`;
+const netlifyAttrs = isNetlify ? { 'data-netlify': 'true', 'netlify-honeypot': 'bot-field' } : {};
+---
+<section class="catering" id="catering" aria-labelledby="catering-title">
+  <div class="wrap catering__grid">
+    <div class="catering__copy" data-reveal>
+      <h2 id="catering-title">{t.catering.title}</h2>
+      <p class="catering__lead">{t.catering.lead}</p>
+      <ul class="occasions" role="list">
+        {t.catering.occasions.map((o) => <li>{o}</li>)}
+      </ul>
+      <p class="catering__call">
+        {t.catering.orCall}
+        <a class="link" href={SITE.phone.href}>{SITE.phone.display}</a>
+        <span class="catering__or">·</span>
+        <a class="link" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      </p>
+    </div>
+
+    <div class="card" data-reveal style="--i:1">
+      <!--
+        TODO: el formulari està configurat a src/config/site.ts (CATERING_FORM).
+        Per defecte usa Netlify Forms. Amb WhatsApp, correu o un altre servei, canvia el `mode`.
+      -->
+      <form
+        class="form"
+        name={CATERING_FORM.netlifyName}
+        method="POST"
+        action={action}
+        novalidate
+        data-catering-form
+        data-mode={CATERING_FORM.mode}
+        data-wa={CATERING_FORM.whatsapp}
+        data-email={CATERING_FORM.email}
+        data-post={CATERING_FORM.mode === 'action' ? CATERING_FORM.action : ''}
+        data-wa-intro={t.catering.waIntro}
+        data-msg-sending={t.catering.sending}
+        data-msg-required={t.catering.required}
+        data-msg-error={t.catering.error}
+        {...netlifyAttrs}
+      >
+        <div class="form__head">
+          <h3>{t.catering.formTitle}</h3>
+          <p>{t.catering.formLead}</p>
+        </div>
+
+        <input type="hidden" name="form-name" value={CATERING_FORM.netlifyName} />
+        <input type="hidden" name="idioma" value={t.lang} />
+        <p class="visually-hidden" aria-hidden="true">
+          <label>No omplis aquest camp <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+        </p>
+
+        <div class="field">
+          <label for={`nom-${t.lang}`}>{f.name}</label>
+          <input id={`nom-${t.lang}`} name="nom" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for={`tel-${t.lang}`}>{f.phone}</label>
+          <input id={`tel-${t.lang}`} name="telefon" type="tel" inputmode="tel" autocomplete="tel" required />
+        </div>
+        <div class="field field--full">
+          <label for={`tipus-${t.lang}`}>{f.type}</label>
+          <select id={`tipus-${t.lang}`} name="tipus" required>
+            <option value="" disabled selected>{f.typePlaceholder}</option>
+            {f.typeOptions.map((o) => <option value={o}>{o}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for={`persones-${t.lang}`}>{f.people}</label>
+          <input id={`persones-${t.lang}`} name="persones" type="number" inputmode="numeric" min="1" step="1" required />
+        </div>
+        <div class="field">
+          <label for={`data-${t.lang}`}>{f.date}</label>
+          <input id={`data-${t.lang}`} name="data" type="date" required data-min-today />
+        </div>
+        <div class="field field--full">
+          <label for={`comentaris-${t.lang}`}>{f.comments} <span class="opt">({f.optional})</span></label>
+          <textarea id={`comentaris-${t.lang}`} name="comentaris" rows="3" placeholder={f.commentsHint}></textarea>
+        </div>
+        <div class="check field--full">
+          <input id={`privacitat-${t.lang}`} name="privacitat" type="checkbox" required />
+          <label for={`privacitat-${t.lang}`}>{f.privacy} <a class="link" href={t.legalPath}>{f.privacyLink}</a>.</label>
+        </div>
+
+        <p class="form__msg field--full" role="status" aria-live="polite" data-form-msg></p>
+
+        <button class="btn form__submit field--full" type="submit">
+          <span data-btn-label>{t.catering.submit}</span>
+          <Icon name="arrow" />
+        </button>
+      </form>
+
+      <div class="done" hidden data-form-done tabindex="-1">
+        <span class="done__icon"><Icon name="check" /></span>
+        <h3>{t.catering.successTitle}</h3>
+        <p>{t.catering.successText}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-catering-form]');
+  if (form) {
+    const msg = form.querySelector<HTMLElement>('[data-form-msg]')!;
+    const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const label = btn.querySelector<HTMLElement>('[data-btn-label]')!;
+    const done = form.parentElement!.querySelector<HTMLElement>('[data-form-done]')!;
+    const d = form.dataset;
+
+    // La data mínima és avui (hora de Madrid)
+    const dateInput = form.querySelector<HTMLInputElement>('[data-min-today]');
+    if (dateInput) {
+      dateInput.min = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date());
+    }
+
+    form.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el.getAttribute('aria-invalid') === 'true' && el.checkValidity()) el.removeAttribute('aria-invalid');
+    });
+
+    const summary = (data: FormData) => {
+      const rows: string[] = [d.waIntro || ''];
+      form.querySelectorAll<HTMLInputElement>('input:not([type=hidden]):not([type=checkbox]):not([name=bot-field]), select, textarea').forEach((el) => {
+        const v = (data.get(el.name) || '').toString().trim();
+        if (!v) return;
+        const lab = form.querySelector(`label[for="${el.id}"]`)?.childNodes[0]?.textContent?.trim() || el.name;
+        rows.push(`${lab}: ${v}`);
+      });
+      return rows.join('\n');
+    };
+
+    const openMail = (data: FormData) => {
+      const subject = encodeURIComponent('Càtering · Bussinets de Cuina');
+      window.location.href = `mailto:${d.email}?subject=${subject}&body=${encodeURIComponent(summary(data))}`;
+    };
+
+    const showDone = () => {
+      form.hidden = true;
+      done.hidden = false;
+      done.focus({ preventScroll: true });
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
+      if (!form.checkValidity()) {
+        let first: HTMLElement | null = null;
+        form.querySelectorAll<HTMLInputElement>('input, select, textarea').forEach((el) => {
+          if (!el.checkValidity()) {
+            el.setAttribute('aria-invalid', 'true');
+            first ??= el;
+          }
+        });
+        msg.textContent = d.msgRequired || '';
+        (first as HTMLElement | null)?.focus();
+        return;
+      }
+
+      const data = new FormData(form);
+      const mode = d.mode;
+
+      if (mode === 'whatsapp' && d.wa) {
+        window.open(`https://wa.me/${d.wa}?text=${encodeURIComponent(summary(data))}`, '_blank', 'noopener');
+        showDone();
+        return;
+      }
+      if (mode === 'mailto' && d.email) {
+        openMail(data);
+        showDone();
+        return;
+      }
+
+      const url = mode === 'action' ? d.post : mode === 'netlify' ? '/' : '';
+      if (!url && d.email) {
+        openMail(data);
+        showDone();
+        return;
+      }
+      if (!url) {
+        // Mode sense configurar: demanem que truquin.
+        msg.textContent = d.msgError || '';
+        return;
+      }
+
+      btn.disabled = true;
+      label.textContent = d.msgSending || '';
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: mode === 'netlify'
+            ? { 'Content-Type': 'application/x-www-form-urlencoded' }
+            : { Accept: 'application/json' },
+          body: mode === 'netlify' ? new URLSearchParams(data as any).toString() : data,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        showDone();
+      } catch {
+        if (d.email) {
+          // Pla B: obrim el correu amb la consulta ja escrita.
+          openMail(data);
+          showDone();
+          return;
+        }
+        msg.textContent = d.msgError || '';
+        btn.disabled = false;
+        label.textContent = btn.dataset.label || label.textContent;
+      }
+    });
+    btn.dataset.label = label.textContent || '';
+  }
+</script>
+
+<style>
+  .catering {
+    background: var(--tomato);
+    color: var(--cream-on-red);
+    padding-block: var(--section);
+  }
+  .catering__grid { display: grid; gap: clamp(2.5rem, 1.5rem + 3vw, 4rem); align-items: start; }
+  .catering__copy { display: grid; gap: 1.5rem; }
+  .catering h2 { color: #fff; font-size: var(--step-3); max-width: 14ch; }
+  .catering__lead { font-size: var(--step-1); line-height: 1.5; max-width: 36ch; }
+  .occasions {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .occasions li {
+    padding: 0.4rem 0.95rem;
+    border-radius: 999px;
+    background: var(--saffron);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+  .catering__call { font-size: var(--step-0); }
+  .catering__call .link { margin-left: 0.35rem; color: #fff; overflow-wrap: anywhere; }
+  .catering__or { margin-left: 0.35rem; }
+
+  .card {
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: var(--radius);
+    padding: clamp(1.25rem, 0.75rem + 2.5vw, 2.25rem);
+    box-shadow: 0 2px 4px rgb(60 10 0 / 0.12), 0 24px 48px -20px rgb(60 10 0 / 0.5);
+  }
+  .form { display: grid; grid-template-columns: 1fr; gap: 1rem 1rem; }
+  .form__head { display: grid; gap: 0.35rem; margin-bottom: 0.5rem; }
+  .form__head h3 { font-size: var(--step-2); }
+  .form__head p { color: var(--ink-soft); }
+  .field { display: grid; gap: 0.35rem; }
+  .field label { font-weight: 600; font-size: 0.95rem; }
+  .opt { font-weight: 400; color: var(--ink-soft); }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.85rem;
+    font: 400 1rem/1.4 var(--font-body);
+    font-size: max(16px, 1rem);
+    color: var(--ink);
+    background: #fffaf1;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+    appearance: none;
+  }
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23231a12' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.1rem;
+    padding-right: 2.5rem;
+  }
+  .field textarea { resize: vertical; min-height: 6rem; }
+  .field input::placeholder, .field textarea::placeholder { color: #7d6a58; }
+  .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px var(--saffron-soft);
+  }
+  [aria-invalid='true'] { border-color: var(--tomato) !important; background: #fff3ef !important; }
+  .check { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.95rem; }
+  .check input { width: 1.5rem; height: 1.5rem; margin: 0.1rem 0 0; flex: none; }
+  .check[aria-invalid='true'] { color: var(--tomato); }
+  .form__msg { color: var(--tomato-deep); font-weight: 600; min-height: 0; }
+  .form__msg:empty { display: none; }
+  .form__submit { width: 100%; margin-top: 0.25rem; }
+  .form__submit :global(svg) { transition: transform 200ms var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .form__submit:hover :global(svg) { transform: translateX(3px); }
+  }
+
+  .done[hidden] { display: none; }
+  .done { display: grid; gap: 0.6rem; justify-items: start; padding-block: 1rem; outline: none; }
+  .done:not([hidden]) { animation: done-in 420ms var(--ease-out); }
+  .done h3 { font-size: var(--step-2); }
+  .done__icon {
+    display: grid; place-items: center;
+    width: 3rem; height: 3rem; border-radius: 50%;
+    background: var(--saffron); color: var(--ink);
+  }
+  .done__icon :global(svg) { width: 1.5rem; height: 1.5rem; }
+  @keyframes done-in {
+    from { opacity: 0; transform: translateY(8px); filter: blur(3px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+
+  @media (min-width: 560px) {
+    .form { grid-template-columns: 1fr 1fr; }
+    .form__head, .field--full { grid-column: 1 / -1; }
+  }
+  @media (min-width: 980px) {
+    .catering__grid { grid-template-columns: 1fr 1.05fr; gap: 4.5rem; }
+    .catering__copy { position: sticky; top: 7rem; }
+  }
+</style>

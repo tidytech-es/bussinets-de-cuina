@@ -1,0 +1,63 @@
+---
+import { SITE } from '../config/site';
+import type { Dict } from '../i18n/ca';
+import Icon from './Icon.astro';
+import { Image } from 'astro:assets';
+import logo from '../assets/logo/logo-complet-crema.png';
+interface Props { t: Dict }
+const { t } = Astro.props;
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <Image src={logo} alt={SITE.name} width={240} densities={[1, 2]} format="webp" loading="lazy" class="footer__logo" />
+      <p class="footer__tag">{t.footer.tagline}</p>
+    </div>
+
+    <ul class="footer__list" role="list">
+      <li><a class="link" href={SITE.phone.href}>{SITE.phone.display}</a></li>
+      <li><a class="link" href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+      <li>{SITE.address.street}, {SITE.address.postalCode} {SITE.address.city}</li>
+      <li>{t.status.fallback}</li>
+    </ul>
+
+    <ul class="footer__list" role="list">
+      <li>
+        <a class="social" href={SITE.facebook} target="_blank" rel="noopener">
+          <Icon name="facebook" /> <span>{t.footer.follow}</span>
+        </a>
+      </li>
+      <li><a class="link" href={t.legalPath}>{t.footer.legal}</a></li>
+      <li><a class="link" href={t.other.path} lang={t.other.short.toLowerCase()}>{t.other.label}</a></li>
+    </ul>
+  </div>
+  <div class="wrap footer__bottom">
+    <p>© {year} {t.footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--ink); color: var(--paper); padding-block: clamp(3rem, 2rem + 3vw, 4.5rem) calc(1.5rem + var(--callbar-h)); }
+  .footer__grid { display: grid; gap: 2rem; }
+  :global(.footer__logo) { width: 240px; height: auto; }
+  .footer__tag { margin-top: 0.75rem; color: #d9cab3; max-width: 30ch; }
+  .footer__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; align-content: start; color: #e8dcc8; }
+  .footer .link { font-weight: 500; }
+  .social {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    min-height: 2.75rem;
+    text-decoration: none; font-weight: 600;
+    transition: color 180ms ease;
+  }
+  .social :global(svg) { width: 1.5rem; height: 1.5rem; padding: 0.15rem; border-radius: 50%; background: #1877f2; color: #fff; }
+  @media (hover: hover) and (pointer: fine) { .social:hover { color: var(--saffron); } }
+  .footer__bottom {
+    margin-top: 2.5rem; padding-top: 1.25rem;
+    border-top: 1px solid rgb(245 236 220 / 0.15);
+    font-size: 0.85rem; color: #bfae95;
+  }
+  @media (min-width: 760px) {
+    .footer__grid { grid-template-columns: 1.4fr 1fr 1fr; }
+  }
+</style>

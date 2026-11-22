@@ -1,0 +1,110 @@
+---
+import { Picture } from 'astro:assets';
+import { SITE } from '../config/site';
+import type { Dict } from '../i18n/ca';
+import Icon from './Icon.astro';
+import facana from '../assets/fotos/facana.jpg';
+interface Props { t: Dict }
+const { t } = Astro.props;
+const rating = SITE.rating.value.toLocaleString(t.htmlLang);
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="status" data-status data-state="unknown">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span data-status-text>{t.status.fallback}</span>
+      </p>
+
+      <h1 id="hero-title" class="hero__title">
+        {t.hero.title.map((line, i) => <span class:list={['hero__line', { 'hero__line--accent': i === 1 }]}>{line} </span>)}
+      </h1>
+
+      <p class="lead hero__lead">{t.hero.lead}</p>
+
+      <div class="hero__actions">
+        <a class="btn" href={SITE.phone.href}>
+          <Icon name="phone" />
+          <span>{t.cta.call} <span class="hero__num">· {SITE.phone.display}</span></span>
+        </a>
+        <a class="btn btn--ghost" href={SITE.directions} target="_blank" rel="noopener">
+          <Icon name="pin" />
+          <span>{t.cta.directions}</span>
+        </a>
+      </div>
+
+      <ul class="hero__facts">
+        <li>
+          <Icon name="star" class="hero__star" />
+          <span><strong>{rating}</strong> {t.hero.ratingLabel} · {t.hero.reviews}</span>
+        </li>
+        <li><a class="link" href="#menu">{t.hero.menuFact}</a></li>
+        <li>{SITE.address.street}</li>
+      </ul>
+    </div>
+
+    <figure class="hero__photo">
+      <!-- Foto real de la façana (fitxa de Google). TODO(client): foto original en més resolució. -->
+      <Picture
+        src={facana}
+        formats={['avif', 'webp']}
+        widths={[480, 760, 1100, 1360]}
+        sizes="(min-width: 900px) 42vw, 100vw"
+        alt={t.hero.photoAlt}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .hero { padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) clamp(3.5rem, 2rem + 5vw, 6rem); }
+  .hero__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+    align-items: center;
+  }
+  .hero__copy { display: grid; gap: 1.5rem; justify-items: start; }
+  .hero__title { font-size: var(--step-4); line-height: 0.98; letter-spacing: -0.015em; }
+  .hero__line { display: block; }
+  .hero__line--accent { color: var(--tomato); }
+  .hero__lead { max-width: 34ch; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; width: 100%; }
+  .hero__facts {
+    list-style: none;
+    margin: 0.25rem 0 0;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+    width: 100%;
+  }
+  .hero__facts li { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .hero__facts strong { color: var(--ink); }
+  :global(.hero__star) { width: 1.05rem; height: 1.05rem; color: var(--saffron); }
+
+  .hero__photo {
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--kraft);
+    aspect-ratio: 4 / 3;
+    box-shadow: var(--shadow);
+  }
+  .hero__photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 58% 50%; }
+
+  @media (max-width: 559px) {
+    .hero__actions .btn { flex: 1 1 100%; }
+    .hero__num { display: none; }
+  }
+  @media (min-width: 900px) {
+    .hero__grid { grid-template-columns: 1.15fr 0.85fr; }
+    .hero__photo { aspect-ratio: 4 / 5; }
+    .hero { min-height: calc(100svh - 4.75rem); display: grid; align-content: center; }
+  }
+</style>

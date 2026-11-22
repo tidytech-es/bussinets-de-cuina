@@ -1,0 +1,82 @@
+---
+import { SITE } from '../config/site';
+import type { Dict } from '../i18n/ca';
+import Icon from './Icon.astro';
+interface Props { t: Dict }
+const { t } = Astro.props;
+---
+<section class="section how" id="per-emportar" aria-labelledby="how-title">
+  <div class="wrap">
+    <h2 id="how-title" data-reveal>{t.takeaway.title}</h2>
+
+    <ol class="steps" role="list">
+      {t.takeaway.steps.map((s, i) => (
+        <li class="step" data-reveal style={`--i:${i}`}>
+          <span class="step__n" aria-hidden="true">{i + 1}</span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </li>
+      ))}
+    </ol>
+
+    <a class="phone-moment" href={SITE.phone.href} data-reveal>
+      <span class="phone-moment__label"><Icon name="phone" /> {t.takeaway.note}</span>
+      <span class="phone-moment__num">{SITE.phone.display}</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .how { background: var(--paper-2); border-block: 1px solid var(--line); }
+  .steps {
+    list-style: none;
+    margin: clamp(2rem, 1rem + 3vw, 3.5rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  .step { display: grid; gap: 0.4rem; align-content: start; }
+  .step__n {
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    line-height: 1;
+    color: var(--tomato);
+    margin-bottom: 0.35rem;
+  }
+  .step h3 { font-size: var(--step-1); }
+  .step p { color: var(--ink-soft); max-width: 30ch; }
+
+  .phone-moment {
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+    display: grid;
+    gap: 0.25rem;
+    padding-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-top: 2px solid var(--ink);
+    text-decoration: none;
+    width: 100%;
+  }
+  .phone-moment__label {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .phone-moment__label :global(svg) { width: 1.15rem; height: 1.15rem; color: var(--tomato); }
+  .phone-moment__num {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 1rem + 8.5vw, 8rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transition: color 200ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .phone-moment:hover .phone-moment__num { color: var(--tomato); }
+  }
+  .phone-moment:active .phone-moment__num { color: var(--tomato-deep); }
+
+  @media (min-width: 760px) {
+    .steps { grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+    .step { border-left: 1px solid var(--line); padding-left: 1.5rem; }
+  }
+</style>

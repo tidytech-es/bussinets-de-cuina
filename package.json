@@ -1,0 +1,21 @@
+{
+  "name": "bussinets-de-cuina",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "fotos": "node scripts/preparar-fotos.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
+    "@fontsource-variable/schibsted-grotesk": "^5.3.0",
+    "@fontsource/caprasimo": "^5.3.0",
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}

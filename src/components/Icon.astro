@@ -1,0 +1,19 @@
+---
+// Icones dibuixades a mà amb un sol traç (1.8) perquè totes parlin igual.
+interface Props { name: 'phone' | 'pin' | 'clock' | 'facebook' | 'arrow' | 'star' | 'check' | 'map'; class?: string }
+const { name, class: cls } = Astro.props;
+---
+{name === 'facebook' ? (
+  <svg class={cls} viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.6V21h2.9z"/></svg>
+) : name === 'star' ? (
+  <svg class={cls} viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg>
+) : (
+  <svg class={cls} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    {name === 'phone' && <path d="M6.6 3.5h2.6l1.4 4-2 1.3a11.5 11.5 0 0 0 6.6 6.6l1.3-2 4 1.4v2.6a2 2 0 0 1-2.2 2A16.6 16.6 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z" />}
+    {name === 'pin' && <><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" /><circle cx="12" cy="10" r="2.4" /></>}
+    {name === 'clock' && <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></>}
+    {name === 'arrow' && <path d="M5 12h14M13 6l6 6-6 6" />}
+    {name === 'check' && <path d="M5 12.5l4.2 4.2L19 7" />}
+    {name === 'map' && <><path d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z" /><path d="M9 4.5v13M15 6.5v13" /></>}
+  </svg>
+)}

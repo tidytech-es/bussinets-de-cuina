@@ -1,0 +1,171 @@
+---
+import { Picture } from 'astro:assets';
+import { SITE } from '../config/site';
+import type { Dict } from '../i18n/ca';
+import Icon from './Icon.astro';
+import facanaFrontal from '../assets/fotos/facana-frontal.jpg';
+interface Props { t: Dict }
+const { t } = Astro.props;
+const v = t.visit;
+const hhmm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+const order = [1, 2, 3, 4, 5, 6, 0];
+const a = SITE.address;
+---
+<section class="section visit" id="horari" aria-labelledby="visit-title">
+  <div class="wrap">
+    <h2 id="visit-title" data-reveal>{v.title}</h2>
+
+    <div class="visit__grid">
+      <div class="info" data-reveal>
+        <div class="block">
+          <h3 class="block__title"><Icon name="clock" /> {v.hoursTitle}</h3>
+          <p class="status" data-status data-state="unknown">
+            <span class="status__dot" aria-hidden="true"></span>
+            <span data-status-text>{t.status.fallback}</span>
+          </p>
+          <table class="hours">
+            <caption class="visually-hidden">{v.hoursTitle}</caption>
+            <tbody>
+              {order.map((d) => {
+                const h = SITE.hours[d];
+                return (
+                  <tr data-day={d}>
+                    <th scope="row">{t.daysCap[d]} <span class="hours__today">{v.today}</span></th>
+                    <td>{h ? `${hhmm(h[0])} – ${hhmm(h[1])}` : v.closed}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="block">
+          <h3 class="block__title"><Icon name="pin" /> {v.addressTitle}</h3>
+          <address>
+            {a.street}<br />
+            {a.postalCode} {a.city} ({a.region})
+          </address>
+          <a class="btn btn--ghost block__btn" href={SITE.directions} target="_blank" rel="noopener">
+            <Icon name="pin" /> <span>{t.cta.directions}</span>
+          </a>
+        </div>
+
+        <div class="block">
+          <h3 class="block__title"><Icon name="phone" /> {v.phoneTitle}</h3>
+          <a class="tel" href={SITE.phone.href}>{SITE.phone.display}</a>
+          <a class="link" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </div>
+      </div>
+
+      <div class="place" data-reveal style="--i:1">
+        <figure class="place__photo">
+          <Picture
+            src={facanaFrontal}
+            formats={['avif', 'webp']}
+            widths={[400, 700, 1020]}
+            sizes="(min-width: 900px) 28vw, 100vw"
+            alt={v.photoAlt}
+            loading="lazy"
+          />
+        </figure>
+        <div class="map" data-map data-src={SITE.mapEmbed} data-title={v.mapTitle}>
+          <div class="map__cover">
+            <Icon name="map" class="map__icon" />
+            <button class="btn btn--light map__btn" type="button" data-map-load>
+              <span>{v.mapButton}</span>
+            </button>
+            <p class="map__note">{v.mapNote}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((box) => {
+    box.querySelector('[data-map-load]')?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = box.dataset.src || '';
+      f.title = box.dataset.title || '';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      f.allowFullscreen = true;
+      box.replaceChildren(f);
+      box.classList.add('is-loaded');
+    });
+  });
+</script>
+
+<style>
+  .visit__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+    margin-top: clamp(2rem, 1rem + 3vw, 3rem);
+  }
+  .info { display: grid; gap: 2.25rem; align-content: start; }
+  .block { display: grid; gap: 0.85rem; justify-items: start; }
+  .block__title {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-body); font-weight: 700; font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+  .block__title :global(svg) { width: 1.2rem; height: 1.2rem; color: var(--tomato); }
+
+  .hours { width: 100%; max-width: 26rem; border-collapse: collapse; }
+  .hours th, .hours td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--line); text-align: left; }
+  .hours th { font-weight: 500; }
+  .hours td { text-align: right; color: var(--ink-soft); }
+  .hours__today {
+    display: none;
+    margin-left: 0.4rem;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.1rem 0.45rem; border-radius: 999px;
+    background: var(--saffron); color: var(--ink);
+    vertical-align: 0.1em;
+  }
+  .hours tr.is-today { background: var(--paper-2); }
+  .hours tr.is-today th { font-weight: 700; }
+  .hours tr.is-today td { color: var(--ink); font-weight: 600; }
+  .hours tr.is-today .hours__today { display: inline-block; }
+
+  address { font-style: normal; font-size: var(--step-1); line-height: 1.45; }
+  .block__btn { min-height: 2.9rem; padding-block: 0.6rem; }
+  .tel {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .tel:hover { color: var(--tomato); } }
+
+  .place { display: grid; gap: 1rem; }
+  .place__photo { margin: 0; border-radius: var(--radius); overflow: hidden; aspect-ratio: 1; background: var(--kraft); }
+  .place__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .map {
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .map :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
+  .map__cover {
+    height: 100%;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.9rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  :global(.map__icon) { width: 2.25rem; height: 2.25rem; color: var(--saffron); }
+  .map__note { font-size: 0.85rem; max-width: 30ch; color: #e4d6c2; }
+
+  @media (min-width: 900px) {
+    .visit__grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; }
+    .place { grid-template-columns: 1fr 1fr; align-items: stretch; }
+    .place__photo { aspect-ratio: auto; height: 100%; min-height: 26rem; }
+    .map { aspect-ratio: auto; height: 100%; min-height: 26rem; }
+  }
+</style>

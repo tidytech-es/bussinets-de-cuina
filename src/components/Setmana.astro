@@ -1,0 +1,101 @@
+---
+// La pissarra de la setmana: menú (dl–dv), paella (dijous) i pollastre a l'ast (diumenge).
+// Dades confirmades pel client amb els seus cartells. El que toca avui es marca amb JS (status.ts).
+import { SITE } from '../config/site';
+import type { Dict } from '../i18n/ca';
+import Icon from './Icon.astro';
+interface Props { t: Dict }
+const { t } = Astro.props;
+const w = t.week;
+---
+<section class="section week" id="menu" aria-labelledby="week-title">
+  <div class="wrap">
+    <h2 id="week-title" data-reveal>{w.title}</h2>
+
+    <div class="board" data-reveal style="--i:1">
+      <article class="item item--menu" data-special-days="1,2,3,4,5">
+        <p class="item__when">{w.menu.when} <span class="item__today">{w.today}</span></p>
+        <h3 class="item__name">{w.menu.name}</h3>
+        <p class="item__price">{w.menu.price}</p>
+        <p class="item__detail">{w.menu.detail}</p>
+        <p class="item__note">{w.menu.note}</p>
+      </article>
+
+      <article class="item" data-special-days="4">
+        <p class="item__when">{w.paella.when} <span class="item__today">{w.today}</span></p>
+        <h3 class="item__name item__name--big">{w.paella.name}</h3>
+        <p class="item__detail">{w.paella.detail}</p>
+      </article>
+
+      <article class="item" data-special-days="0">
+        <p class="item__when">{w.chicken.when} <span class="item__today">{w.today}</span></p>
+        <h3 class="item__name item__name--big">{w.chicken.name}</h3>
+        <p class="item__detail">{w.chicken.detail}</p>
+      </article>
+    </div>
+
+    <a class="btn week__call" href={SITE.phone.href}>
+      <Icon name="phone" /> <span>{t.cta.call} · {SITE.phone.display}</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .week { padding-block: clamp(1rem, 0.5rem + 2vw, 2rem) clamp(2.5rem, 1.5rem + 3vw, 4rem); }
+  .board {
+    margin-top: clamp(1.75rem, 1rem + 2vw, 2.5rem);
+    display: grid;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .item {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    transition: background-color 300ms ease;
+  }
+  .item + .item { border-top: 1.5px dashed rgb(245 236 220 / 0.28); }
+  .item.is-today { background: #33271c; }
+  .item__when {
+    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+    font-weight: 700;
+    font-size: var(--step--1);
+    color: var(--saffron);
+  }
+  .item__today {
+    display: none;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: var(--saffron);
+    color: var(--ink);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .item.is-today .item__today { display: inline-block; }
+  .item__name { font-size: var(--step-2); color: #fff; }
+  .item__name--big { font-size: var(--step-3); }
+  .item__price {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 2rem + 6vw, 6rem);
+    line-height: 0.95;
+    color: var(--saffron);
+    letter-spacing: -0.02em;
+    margin-block: 0.25rem 0.5rem;
+  }
+  .item__detail { color: #eadfcc; max-width: 32ch; }
+  .item__note { color: #cdbda3; font-size: var(--step--1); }
+
+  .week__call { margin-top: 1.5rem; }
+  @media (max-width: 559px) { .week__call { width: 100%; } }
+
+  @media (min-width: 900px) {
+    .board { grid-template-columns: 1.25fr 1fr 1fr; }
+    .item + .item { border-top: 0; border-left: 1.5px dashed rgb(245 236 220 / 0.28); }
+    .week__call { display: none; }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+// TODO(client/assessoria): aquest text és un MODEL PROVISIONAL. Cal substituir-lo pel text
+// legal definitiu (titular, NIF, dades registrals, finalitat del tractament, drets RGPD…).
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import type { Dict } from '../i18n/ca';
+interface Props { t: Dict }
+const { t } = Astro.props;
+const ca = t.lang === 'ca';
+---
+<Base t={t} title={`${t.legal.title} | Bussinets de Cuina`} path={t.legalPath} altPath={t.other.legalPath} schema={false} noindex>
+  <Header slot="header" t={t} otherPath={t.other.legalPath} />
+  <article class="wrap legal">
+    <h1>{t.legal.title}</h1>
+    <p class="todo" data-todo="text-legal">
+      {ca ? 'TEXT PROVISIONAL — pendent del text legal definitiu del titular.' : 'TEXTO PROVISIONAL — pendiente del texto legal definitivo del titular.'}
+    </p>
+    {ca ? (
+      <>
+        <h2>Titular del web</h2>
+        <p>Nom o raó social: <mark>[PENDENT]</mark> · NIF: <mark>[PENDENT]</mark> · Adreça: Carrer Conestable de Portugal, 13, 08402 Granollers · Telèfon: 938 70 53 43 · Correu: btretze@hotmail.com</p>
+        <h2>Dades del formulari de càtering</h2>
+        <p>Les dades que ens envies (nom, telèfon i detalls de l’esdeveniment) es fan servir només per respondre la teva consulta. Responsable: <mark>[PENDENT]</mark>. Conservació: <mark>[PENDENT]</mark>. Pots exercir els drets d’accés, rectificació i supressió escrivint a btretze@hotmail.com.</p>
+        <h2>Galetes</h2>
+        <p>Aquest web no fa servir galetes pròpies de seguiment. El mapa de Google Maps només es carrega si prems «Mostra el mapa»; en aquest cas Google pot instal·lar les seves galetes.</p>
+      </>
+    ) : (
+      <>
+        <h2>Titular de la web</h2>
+        <p>Nombre o razón social: <mark>[PENDIENTE]</mark> · NIF: <mark>[PENDIENTE]</mark> · Dirección: Carrer Conestable de Portugal, 13, 08402 Granollers · Teléfono: 938 70 53 43 · Correo: btretze@hotmail.com</p>
+        <h2>Datos del formulario de catering</h2>
+        <p>Los datos que nos envías (nombre, teléfono y detalles del evento) se usan solo para responder a tu consulta. Responsable: <mark>[PENDIENTE]</mark>. Conservación: <mark>[PENDIENTE]</mark>. Puedes ejercer los derechos de acceso, rectificación y supresión escribiendo a btretze@hotmail.com.</p>
+        <h2>Cookies</h2>
+        <p>Esta web no usa cookies propias de seguimiento. El mapa de Google Maps solo se carga si pulsas «Mostrar el mapa»; en ese caso Google puede instalar sus cookies.</p>
+      </>
+    )}
+    <p><a class="link" href={t.path}>{t.legal.back}</a></p>
+  </article>
+  <Footer slot="footer" t={t} />
+</Base>
+
+<style>
+  .legal { padding-bottom: calc(5rem + var(--callbar-h)); max-width: 46rem; padding-block: 3rem 5rem; display: grid; gap: 1rem; }
+  .legal h1 { font-size: var(--step-3); }
+  .legal h2 { font-size: var(--step-1); margin-top: 1rem; }
+  .todo { background: var(--saffron-soft); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-weight: 700; }
+  mark { background: var(--tomato-tint); padding: 0 0.25rem; }
+</style>

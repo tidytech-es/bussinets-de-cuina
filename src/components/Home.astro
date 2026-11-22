@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Setmana from './Setmana.astro';
+import Plats from './Plats.astro';
+import ComFunciona from './ComFunciona.astro';
+import Catering from './Catering.astro';
+import Ressenyes from './Ressenyes.astro';
+import Horari from './Horari.astro';
+import Footer from './Footer.astro';
+import CallBar from './CallBar.astro';
+import type { Dict } from '../i18n/ca';
+interface Props { t: Dict }
+const { t } = Astro.props;
+---
+<Base t={t}>
+  <Header slot="header" t={t} />
+  <Hero t={t} />
+  <Setmana t={t} />
+  <Plats t={t} />
+  <ComFunciona t={t} />
+  <Catering t={t} />
+  <Ressenyes t={t} />
+  <Horari t={t} />
+  <Fragment slot="footer">
+    <Footer t={t} />
+    <CallBar t={t} />
+  </Fragment>
+</Base>
