@@ -57,21 +57,22 @@ export const SITE = {
 // Formulari de càtering
 // ─────────────────────────────────────────────────────────────
 // mode:
-//  'netlify'  → Netlify Forms (sense backend propi). Les consultes arriben al panell
-//               de Netlify (Forms → "catering") i es poden reenviar per correu.
-//               Només funciona si el lloc es publica a Netlify.
-//  'whatsapp' → obre WhatsApp amb el missatge escrit. Cal omplir `whatsapp`.
-//  'mailto'   → obre el correu de l'usuari. Cal omplir `email`.
-//  'action'   → POST a qualsevol servei de formularis (Formspree, Getform, Basin…). Cal omplir `action`.
-// Si el mode triat no té la dada que necessita, el formulari mostra el telèfon perquè truquin.
+//  'web3forms' → envia a Web3Forms (https://web3forms.com), que reenvia la consulta per correu
+//                al correu associat a la clau. Funciona en qualsevol hosting. Cal `web3formsKey`.
+//  'whatsapp'  → obre WhatsApp amb el missatge escrit. Cal omplir `whatsapp`.
+//  'mailto'    → obre el correu de l'usuari amb la consulta escrita. Cal omplir `email`.
+//  'action'    → POST a qualsevol altre servei de formularis (Formspree, Getform…). Cal `action`.
+// Si al mode triat li falta la dada (p. ex. la clau buida) o l'enviament falla,
+// el formulari obre el correu a `email` amb la consulta ja escrita.
 export const CATERING_FORM = {
-  mode: 'netlify' as 'netlify' | 'whatsapp' | 'mailto' | 'action',
+  mode: 'web3forms' as 'web3forms' | 'whatsapp' | 'mailto' | 'action',
+  // TODO(client): clau d'accés de Web3Forms creada amb btretze@hotmail.com (web3forms.com → Create Access Key).
+  // És pública per disseny (va a l'HTML). Mentre estigui buida (prototip), el formulari obre el correu.
+  web3formsKey: '',
   // TODO(client): número de WhatsApp amb prefix, sense espais ni "+" (ex.: 34XXXXXXXXX).
   whatsapp: '',
-  // Correu del client. A més, si l'enviament a Netlify falla, el formulari obre un correu a aquesta adreça.
-  // Amb mode 'netlify', recorda activar a Netlify: Forms → Form notifications → Email → btretze@hotmail.com
+  // Correu del client: destí del pla B (mailto).
   email: 'btretze@hotmail.com',
-  // TODO: URL del servei de formularis si mode = 'action'.
+  // URL del servei de formularis si mode = 'action'.
   action: '',
-  netlifyName: 'catering',
 };

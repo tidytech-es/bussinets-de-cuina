@@ -5,9 +5,13 @@ import Icon from './Icon.astro';
 interface Props { t: Dict }
 const { t } = Astro.props;
 const f = t.catering.fields;
-const isNetlify = CATERING_FORM.mode === 'netlify';
-const action = CATERING_FORM.mode === 'action' && CATERING_FORM.action ? CATERING_FORM.action : `${t.path}#catering`;
-const netlifyAttrs = isNetlify ? { 'data-netlify': 'true', 'netlify-honeypot': 'bot-field' } : {};
+const W3 = 'https://api.web3forms.com/submit';
+const post =
+  CATERING_FORM.mode === 'web3forms' && CATERING_FORM.web3formsKey ? W3
+  : CATERING_FORM.mode === 'action' ? CATERING_FORM.action
+  : '';
+// Sense JS el formulari també envia (a Web3Forms) si hi ha clau; si no, torna a la mateixa pàgina.
+const action = post || `${t.path}#catering`;
 ---
 <section class="catering" id="catering" aria-labelledby="catering-title">
   <div class="wrap catering__grid">
@@ -28,11 +32,11 @@ const netlifyAttrs = isNetlify ? { 'data-netlify': 'true', 'netlify-honeypot': '
     <div class="card" data-reveal style="--i:1">
       <!--
         TODO: el formulari està configurat a src/config/site.ts (CATERING_FORM).
-        Per defecte usa Netlify Forms. Amb WhatsApp, correu o un altre servei, canvia el `mode`.
+        Usa Web3Forms; sense clau (prototip) obre el correu del visitant cap a btretze@hotmail.com.
       -->
       <form
         class="form"
-        name={CATERING_FORM.netlifyName}
+        name="catering"
         method="POST"
         action={action}
         novalidate
@@ -40,22 +44,28 @@ const netlifyAttrs = isNetlify ? { 'data-netlify': 'true', 'netlify-honeypot': '
         data-mode={CATERING_FORM.mode}
         data-wa={CATERING_FORM.whatsapp}
         data-email={CATERING_FORM.email}
-        data-post={CATERING_FORM.mode === 'action' ? CATERING_FORM.action : ''}
+        data-post={post}
         data-wa-intro={t.catering.waIntro}
         data-msg-sending={t.catering.sending}
         data-msg-required={t.catering.required}
         data-msg-error={t.catering.error}
-        {...netlifyAttrs}
       >
         <div class="form__head">
           <h3>{t.catering.formTitle}</h3>
           <p>{t.catering.formLead}</p>
         </div>
 
-        <input type="hidden" name="form-name" value={CATERING_FORM.netlifyName} />
+        {CATERING_FORM.mode === 'web3forms' && CATERING_FORM.web3formsKey && (
+          <>
+            <input type="hidden" name="access_key" value={CATERING_FORM.web3formsKey} />
+            <input type="hidden" name="subject" value="Nova consulta de càtering — web Bussinets de Cuina" />
+            <input type="hidden" name="from_name" value="Web Bussinets de Cuina" />
+          </>
+        )}
         <input type="hidden" name="idioma" value={t.lang} />
+        <!-- Camp parany antispam de Web3Forms: les persones no el veuen -->
         <p class="visually-hidden" aria-hidden="true">
-          <label>No omplis aquest camp <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+          <label>No marquis aquesta casella <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" /></label>
         </p>
 
         <div class="field">
@@ -98,7 +108,7 @@ const netlifyAttrs = isNetlify ? { 'data-netlify': 'true', 'netlify-honeypot': '
         </button>
       </form>
 
-      <div class="done" hidden data-form-done tabindex="-1">
+      <div class="done" hidden data-form-done tabindex="-1" data-mail-title={t.catering.mailTitle} data-mail-text={t.catering.mailText}>
         <span class="done__icon"><Icon name="check" /></span>
         <h3>{t.catering.successTitle}</h3>
         <p>{t.catering.successText}</p>
@@ -143,10 +153,19 @@ const netlifyAttrs = isNetlify ? { 'data-netlify': 'true', 'netlify-honeypot': '
       window.location.href = `mailto:${d.email}?subject=${subject}&body=${encodeURIComponent(summary(data))}`;
     };
 
-    const showDone = () => {
+    // kind 'mail': no s'ha enviat res encara, només s'ha obert el correu del visitant.
+    const showDone = (kind: 'sent' | 'mail' = 'sent') => {
+      if (kind === 'mail') {
+        done.querySelector('h3')!.textContent = done.dataset.mailTitle || '';
+        done.querySelector('p')!.textContent = done.dataset.mailText || '';
+      }
       form.hidden = true;
       done.hidden = false;
       done.focus({ preventScroll: true });
+    };
+    const mailPlanB = (data: FormData) => {
+      openMail(data);
+      showDone('mail');
     };
 
     form.addEventListener('submit', async (e) => {
@@ -168,46 +187,37 @@ const netlifyAttrs = isNetlify ? { 'data-netlify': 'true', 'netlify-honeypot': '
       const data = new FormData(form);
       const mode = d.mode;
 
+      // Parany antispam: si un bot marca la casella, fem veure que s'ha enviat.
+      if (data.get('botcheck')) {
+        showDone();
+        return;
+      }
+
       if (mode === 'whatsapp' && d.wa) {
         window.open(`https://wa.me/${d.wa}?text=${encodeURIComponent(summary(data))}`, '_blank', 'noopener');
         showDone();
         return;
       }
-      if (mode === 'mailto' && d.email) {
-        openMail(data);
-        showDone();
-        return;
-      }
 
-      const url = mode === 'action' ? d.post : mode === 'netlify' ? '/' : '';
-      if (!url && d.email) {
-        openMail(data);
-        showDone();
-        return;
-      }
-      if (!url) {
-        // Mode sense configurar: demanem que truquin.
-        msg.textContent = d.msgError || '';
+      const url = d.post;
+      if (mode === 'mailto' || !url) {
+        // Mode correu, o servei sense configurar (prototip sense clau): pla B.
+        if (d.email) mailPlanB(data);
+        else msg.textContent = d.msgError || '';
         return;
       }
 
       btn.disabled = true;
       label.textContent = d.msgSending || '';
       try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: mode === 'netlify'
-            ? { 'Content-Type': 'application/x-www-form-urlencoded' }
-            : { Accept: 'application/json' },
-          body: mode === 'netlify' ? new URLSearchParams(data as any).toString() : data,
-        });
-        if (!res.ok) throw new Error(String(res.status));
+        const res = await fetch(url, { method: 'POST', headers: { Accept: 'application/json' }, body: data });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json.success === false) throw new Error(String(res.status));
         showDone();
       } catch {
         if (d.email) {
           // Pla B: obrim el correu amb la consulta ja escrita.
-          openMail(data);
-          showDone();
+          mailPlanB(data);
           return;
         }
         msg.textContent = d.msgError || '';
