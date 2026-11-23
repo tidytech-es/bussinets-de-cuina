@@ -1,0 +1,13 @@
+// Cloudflare Workers amb fitxers estàtics (sense codi de servidor).
+// Cloudflare compila amb `npm run build` i publica la carpeta dist/.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bussinets-de-cuina",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    // Les rutes acaben en "/" (trailingSlash: 'always' a astro.config.mjs)
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  }
+}

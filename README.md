@@ -17,9 +17,17 @@ Provar l'indicador obert/tancat amb una altra hora (hora de Granollers):
 
 ## Publicar
 
-Qualsevol hosting estàtic (Netlify, Vercel, Cloudflare Pages): comanda `npm run build`, carpeta `dist`.
-`netlify.toml` ja ho deixa configurat per a Netlify. El formulari de càtering fa servir
-**Web3Forms** (vegeu més avall), així que funciona en qualsevol hosting.
+**Cloudflare Workers (fitxers estàtics).** La configuració és a `wrangler.jsonc` i les capçaleres
+a `public/_headers`. Connectat al repositori de GitHub, Cloudflare publica a cada push a `main`:
+
+- Comanda de compilació: `npm run build`
+- Comanda de desplegament: `npx wrangler deploy`
+
+En local, amb el mateix motor de Cloudflare: `npm run cf:preview` (http://localhost:8787).
+
+Qualsevol altre hosting estàtic també serveix (`npm run build` → `dist`). `netlify.toml` es manté
+mentre el projecte antic de Netlify existeixi. El formulari de càtering fa servir **Web3Forms**
+(vegeu més avall), així que funciona en qualsevol hosting.
 
 ## Estructura
 
