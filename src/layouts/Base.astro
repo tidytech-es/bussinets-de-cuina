@@ -1,8 +1,8 @@
 ---
-import '@fontsource/caprasimo/400.css';
-import '@fontsource-variable/schibsted-grotesk';
+import '@fontsource-variable/big-shoulders-display';
+import '@fontsource-variable/instrument-sans';
 import '../styles/global.css';
-import capraLatin from '@fontsource/caprasimo/files/caprasimo-latin-400-normal.woff2?url';
+import displayLatin from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
 import { SITE } from '../config/site';
 import type { Dict } from '../i18n/ca';
 
@@ -95,7 +95,7 @@ const statusText = {
     <link rel="alternate" hreflang="x-default" href={caUrl} />
     <meta name="theme-color" content="#f5ecdc" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preload" href={capraLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={displayLatin} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />

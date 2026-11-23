@@ -49,7 +49,7 @@ const [big, small] = r.quotes;
   .score { display: grid; gap: 0.75rem; justify-items: start; align-content: start; }
   .score h2 { margin-bottom: 1rem; max-width: 12ch; }
   .score__num { display: flex; align-items: baseline; gap: 0.6rem; line-height: 0.9; }
-  .score__value { font-family: var(--font-display); font-size: clamp(5rem, 3rem + 9vw, 9rem); color: var(--tomato); letter-spacing: -0.02em; }
+  .score__value { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(5rem, 3rem + 9vw, 9rem); color: var(--tomato); letter-spacing: -0.02em; }
   .score__out { font-size: var(--step-1); color: var(--ink-soft); font-weight: 600; }
   .stars { position: relative; display: inline-flex; gap: 0.2rem; color: var(--line); }
   .stars :global(svg) { width: 1.6rem; height: 1.6rem; flex: none; }
@@ -81,14 +81,14 @@ const [big, small] = r.quotes;
     position: absolute;
     right: 1rem;
     top: -1.6rem;
-    font-family: var(--font-display);
+    font-family: var(--font-display); font-weight: var(--display-weight);
     font-size: 9rem;
     line-height: 1;
     color: var(--saffron);
     opacity: 0.22;
     pointer-events: none;
   }
-  .quote--big p { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.2; }
+  .quote--big p { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--step-2); line-height: 1.2; }
   .quote figcaption {
     display: inline-flex; align-items: center; gap: 0.5rem;
     font-size: var(--step--1); font-weight: 600; color: var(--ink-soft);

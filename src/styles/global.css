@@ -19,15 +19,16 @@
   --saffron-soft: #f4d58c;
   --cream-on-red: #fbeee6;
 
-  --font-display: 'Caprasimo', 'Cooper Black', Georgia, serif;
-  --font-body: 'Schibsted Grotesk Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Big Shoulders Display Variable', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --display-weight: 850;
+  --font-body: 'Instrument Sans Variable', 'Segoe UI', system-ui, sans-serif;
 
   --step--1: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
   --step-0: clamp(1.0625rem, 1.03rem + 0.15vw, 1.125rem);
   --step-1: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
   --step-2: clamp(1.6rem, 1.35rem + 1.1vw, 2.25rem);
-  --step-3: clamp(2.1rem, 1.6rem + 2.3vw, 3.5rem);
-  --step-4: clamp(2.6rem, 1.7rem + 4.2vw, 5.25rem);
+  --step-3: clamp(2.5rem, 1.85rem + 2.9vw, 4.25rem);
+  --step-4: clamp(3.1rem, 2rem + 5vw, 6rem);
 
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
   --wrap: 72rem;
@@ -77,14 +78,15 @@ img { display: block; max-width: 100%; height: auto; }
 
 h1, h2, h3 {
   font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1.04;
-  letter-spacing: -0.01em;
+  font-weight: var(--display-weight);
+  line-height: 1;
+  letter-spacing: 0;
   margin: 0;
   text-wrap: balance;
 }
+h1, h2 { text-transform: uppercase; line-height: 0.92; letter-spacing: 0.005em; }
 h2 { font-size: var(--step-3); }
-h3 { font-size: var(--step-1); line-height: 1.15; }
+h3 { font-size: calc(var(--step-1) * 1.15); line-height: 1.05; }
 p { margin: 0; }
 
 a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
