@@ -63,7 +63,7 @@ const a = SITE.address;
             src={facanaFrontal}
             formats={['avif', 'webp']}
             widths={[400, 700, 1020]}
-            sizes="(min-width: 900px) 28vw, 100vw"
+            sizes="(min-width: 900px) 55vw, 100vw"
             alt={v.photoAlt}
             loading="lazy"
           />
@@ -164,8 +164,10 @@ const a = SITE.address;
 
   @media (min-width: 900px) {
     .visit__grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; }
-    .place { grid-template-columns: 1fr 1fr; align-items: stretch; }
-    .place__photo { aspect-ratio: auto; height: 100%; min-height: 26rem; }
-    .map { aspect-ratio: auto; height: 100%; min-height: 26rem; }
+    /* Foto i mapa apilats, tots dos en horitzontal */
+    .place { grid-template-columns: 1fr; align-content: start; }
+    .place__photo { aspect-ratio: 16 / 9; }
+    .place__photo :global(img) { object-position: 50% 48%; }
+    .map { aspect-ratio: 16 / 9; }
   }
 </style>
