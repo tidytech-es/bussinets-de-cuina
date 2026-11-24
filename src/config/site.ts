@@ -24,7 +24,7 @@ export const SITE = {
   },
 
   // Correu facilitat pel client (2026-11-22)
-  email: 'btretze@hotmail.com',
+  email: 'btreche@hotmail.com',
 
   facebook: 'https://www.facebook.com/bussinetsdecuina',
 
@@ -66,13 +66,13 @@ export const SITE = {
 // el formulari obre el correu a `email` amb la consulta ja escrita.
 export const CATERING_FORM = {
   mode: 'web3forms' as 'web3forms' | 'whatsapp' | 'mailto' | 'action',
-  // TODO(client): clau d'accés de Web3Forms creada amb btretze@hotmail.com (web3forms.com → Create Access Key).
+  // TODO(client): clau d'accés de Web3Forms creada amb btreche@hotmail.com (web3forms.com → Create Access Key).
   // És pública per disseny (va a l'HTML). Mentre estigui buida (prototip), el formulari obre el correu.
   web3formsKey: '',
   // TODO(client): número de WhatsApp amb prefix, sense espais ni "+" (ex.: 34XXXXXXXXX).
   whatsapp: '',
   // Correu del client: destí del pla B (mailto).
-  email: 'btretze@hotmail.com',
+  email: 'btreche@hotmail.com',
   // URL del servei de formularis si mode = 'action'.
   action: '',
 };

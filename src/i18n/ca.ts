@@ -108,7 +108,7 @@ export const ca = {
     successTitle: 'Consulta enviada',
     successText: 'Gràcies! Et trucarem per parlar-ne. Si és urgent, truca’ns al 938 70 53 43.',
     mailTitle: 'Ja gairebé està',
-    mailText: 'S’ha obert el teu correu amb la consulta escrita. Envia-la i et contactarem. Si no s’ha obert, escriu-nos a btretze@hotmail.com o truca al 938 70 53 43.',
+    mailText: 'S’ha obert el teu correu amb la consulta escrita. Envia-la i et contactarem. Si no s’ha obert, escriu-nos a btreche@hotmail.com o truca al 938 70 53 43.',
     error: 'No s’ha pogut enviar. Truca’ns al 938 70 53 43 i ho parlem.',
     required: 'Omple els camps marcats.',
     orCall: 'Prefereixes parlar-ho?',

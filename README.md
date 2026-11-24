@@ -66,8 +66,8 @@ Configurable a `src/config/site.ts` → `CATERING_FORM`:
 | `action` | POST a Formspree, Getform, Basin… | `action` (URL) |
 
 **Ara mateix és un prototip:** `web3formsKey` és buida, així que el formulari obre el correu del
-visitant amb la consulta escrita cap a btretze@hotmail.com. Per activar l'enviament real:
-1. A https://web3forms.com, crear una clau amb **btretze@hotmail.com** (li arriba per correu al client).
+visitant amb la consulta escrita cap a btreche@hotmail.com. Per activar l'enviament real:
+1. A https://web3forms.com, crear una clau amb **btreche@hotmail.com** (li arriba per correu al client).
 2. Posar-la a `web3formsKey` i publicar. La clau és pública per disseny; no és cap secret.
 
 Si l'enviament falla, el formulari també obre el correu (pla B).

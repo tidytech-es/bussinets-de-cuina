@@ -110,7 +110,7 @@ export const es: Dict = {
     successTitle: 'Consulta enviada',
     successText: '¡Gracias! Te llamaremos para hablarlo. Si es urgente, llámanos al 938 70 53 43.',
     mailTitle: 'Ya casi está',
-    mailText: 'Se ha abierto tu correo con la consulta escrita. Envíala y te contactaremos. Si no se ha abierto, escríbenos a btretze@hotmail.com o llama al 938 70 53 43.',
+    mailText: 'Se ha abierto tu correo con la consulta escrita. Envíala y te contactaremos. Si no se ha abierto, escríbenos a btreche@hotmail.com o llama al 938 70 53 43.',
     error: 'No se ha podido enviar. Llámanos al 938 70 53 43 y lo hablamos.',
     required: 'Rellena los campos marcados.',
     orCall: '¿Prefieres hablarlo?',
