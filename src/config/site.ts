@@ -23,7 +23,8 @@ export const SITE = {
     e164: '+34938705343',
   },
 
-  // Correu facilitat pel client (2026-11-22)
+  // Correu del client. Corregit 2026-11-24: btretze@ rebotava; btreche@ surt a Punt Vallès i Cylex.
+  // TODO(client): confirmar-lo per telèfon.
   email: 'btreche@hotmail.com',
 
   facebook: 'https://www.facebook.com/bussinetsdecuina',
